@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Penilaian;
+use App\Models\Bagian;
 
 class Pegawai extends Model
 {
@@ -13,7 +14,8 @@ class Pegawai extends Model
     use HasFactory;
     protected $fillable = [
         'nama',
-        'bagian',
+        'bagian_id',
+        'cover',
     ];
     public function sluggable(): array
     {
@@ -27,5 +29,10 @@ class Pegawai extends Model
     public function penilaian()
     {
         return $this->hasMany(Penilaian::class);
+    }
+
+    public function bagian()
+    {
+        return $this->belongsTo(Bagian::class);
     }
 }

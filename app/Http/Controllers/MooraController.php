@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bagian;
 use App\Models\Criteria;
+use App\Models\Pegawai;
 use App\Models\Penyakit;
 use App\Models\Product;
 use App\Models\Tumbuhan;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Penilaian;
 
 class MooraController extends Controller
 {
@@ -18,9 +21,9 @@ class MooraController extends Controller
      */
     public function index()
     {
-        $penyakit = Penyakit::all();
+        $penyakit = Bagian::all();
         $criterion = Criteria::all();
-        $products = Tumbuhan::all();
+        $products = Pegawai::all();
         return view('admin.pages.moora.index', compact('criterion', 'products', 'penyakit'));
     }
 
@@ -58,23 +61,21 @@ class MooraController extends Controller
     public function getMatriks(Request $request)
     {
         if ($request->ajax()) {
-            $tumbuhan = Tumbuhan::where('penyakit_id', $request->id)->get();
+            $pegawais = Pegawai::all();
+            $crits = Criteria::all();
 
-            $plants = array();
-            foreach ($tumbuhan as $plant) {
-                $arrayPlant = array(
-                    "nama" => $plant->nama,
-                    "bagian" => $this->normalize($request->id, $plant->bagian, 'bagian'),
-                    "pengolahan" => $this->normalize($request->id, $plant->pengolahan, 'pengolahan'),
-                    "penggunaan" => $this->normalize($request->id, $plant->penggunaan, 'penggunaan'),
-                    "jenis" => $this->normalize($request->id, $plant->jenis, 'jenis'),
-                );
-                array_push($plants, $arrayPlant);
+            for ($i = 0; $i < count($pegawais); $i++) {
+                for ($j = 0; $j < count($crits); $j++) {
+                    $nilai = Penilaian::where('pegawai_id', $pegawais[$i]['id'])->where('criteria_id', $crits[$j]['id'])->first();
+                    $pegawais[$i]['crit_' . ($j + 1)] = $nilai->nilai;
+                }
             }
+
+
 
             $criterion = Criteria::all('bobot');
             return response()->json([
-                'tumbuhan' => $plants,
+                'pegawais' => $pegawais,
                 'bobot' => $criterion,
             ]);
         }
@@ -84,32 +85,20 @@ class MooraController extends Controller
     {
         if ($request->ajax()) {
             $param = $request->param;
-            $whereParam = array();
-            foreach ($param as $key => $value) {
-
-                if ($value == null) {
-                    continue;
+            $pegawais = Pegawai::where('bagian_id', $param['bagian_id'])->get();
+            $crits = Criteria::all();
+            for ($i = 0; $i < count($pegawais); $i++) {
+                for ($j = 0; $j < count($crits); $j++) {
+                    $nilai = Penilaian::where('pegawai_id', $pegawais[$i]['id'])->where('criteria_id', $crits[$j]['id'])->first();
+                    $pegawais[$i]['crit_' . ($j + 1)] = $nilai->nilai;
                 }
-                $where = [$key, '=', $value];
-                array_push($whereParam, $where);
             }
-            $tumbuhan = Tumbuhan::where($whereParam)->get();
 
-            $plants = array();
-            foreach ($tumbuhan as $plant) {
-                $arrayPlant = array(
-                    "nama" => $plant->nama,
-                    "bagian" => $this->normalize($param['penyakit_id'], $plant->bagian, 'bagian'),
-                    "pengolahan" => $this->normalize($param['penyakit_id'], $plant->pengolahan, 'pengolahan'),
-                    "penggunaan" => $this->normalize($param['penyakit_id'], $plant->penggunaan, 'penggunaan'),
-                    "jenis" => $this->normalize($param['penyakit_id'], $plant->jenis, 'jenis'),
-                );
-                array_push($plants, $arrayPlant);
-            }
+
 
             $criterion = Criteria::all('bobot');
             return response()->json([
-                'tumbuhan' => $plants,
+                'pegawais' => $pegawais,
                 'bobot' => $criterion,
             ]);
         }
@@ -127,7 +116,7 @@ class MooraController extends Controller
     {
         if ($request->ajax()) {
             $criterion = Criteria::all();
-            $product = Tumbuhan::where('penyakit_id', $request->penyakit_id)->get();
+            $product = Pegawai::all();
             $nilaiPreferensi = array();
 
             $arrayNormalBobot = $request->arrayMatriksNormalBobot;
@@ -168,7 +157,7 @@ class MooraController extends Controller
                 $where = [$key, '=', $value];
                 array_push($whereParam, $where);
             }
-            $product = Tumbuhan::where($whereParam)->get();
+            $product = Pegawai::where($whereParam)->get();
 
             $nilaiPreferensi = array();
 

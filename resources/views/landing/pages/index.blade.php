@@ -8,7 +8,7 @@
                         <h1>We Are Creative Nerds</h1>
                         <p>Boudin doner frankfurter pig. Cow shank bresaola pork loin tri-tip tongue venison pork belly
                             meatloaf short loin landjaeger biltong beef ribs shankle chicken andouille.</p>
-                        <a href="#" class="btn btn-common">SIGN UP</a>
+                        <a href="{{ route('login') }}" class="btn btn-common">MASUK</a>
                     </div>
                     <img src="{{ asset('multicolor/images/home/slider/hill.png') }}" class="slider-hill"
                         alt="slider image">

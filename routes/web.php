@@ -34,6 +34,10 @@ Route::get('/user', function () {
     return view('dashboard');
 });
 
+Route::get('/tes', function () {
+    return view('admin.pages.test');
+});
+
 Route::post('/admin/roc', [RocController::class, 'update'])->name('roc.update');
 Route::get('/admin/roc/getBobot', [RocController::class, 'getBobot'])->name('roc.bobot');
 // Route::post('/admin/roc/save', [AhpController::class, 'store']);
@@ -68,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/pegawai/update/{slug}', [pegawaiController::class, 'update'])->name('pegawai.update');
     Route::delete('/admin/pegawai/{id}', [pegawaiController::class, 'destroy'])->name('pegawai.delete');
     Route::get('/admin/pegawai/edit/{slug}', [pegawaiController::class, 'edit'])->name('pegawai.edit');
+    Route::get('/admin/pegawai/detail/{slug}', [pegawaiController::class, 'show'])->name('pegawai.detail');
+    Route::post('/admin/pegawai/penilaian', [pegawaiController::class, 'penilaian'])->name('pegawai.penilaian');
 
     Route::get('/admin/kriteria', [CriteriaController::class, 'index'])->name('kriteria.index');
     Route::get('/admin/kriteria/create', [CriteriaController::class, 'create'])->name('kriteria.create');

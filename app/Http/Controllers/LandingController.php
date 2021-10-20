@@ -11,8 +11,7 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $penyakits = Penyakit::all();
-        return view('landing.pages.index', compact('penyakits'));
+        return view('landing.pages.index');
     }
 
     public function listTumbuhan($slug)

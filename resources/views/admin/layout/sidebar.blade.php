@@ -1,10 +1,10 @@
 <div class="main-sidebar">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="index.html">SPK Obat</a>
+            <a href="index.html">SPK Pegawai</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">HERB</a>
+            <a href="index.html">BPSDM</a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>

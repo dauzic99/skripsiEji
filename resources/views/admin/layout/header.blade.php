@@ -22,6 +22,8 @@
     @yield('css')
     <link rel="stylesheet" href="{{ asset('stisla-master/assets/css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('stisla-master/assets/css/style.css') }}">
+
+    @yield('style')
 </head>
 
 <body>

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BagianSeeder extends Seeder
 {
@@ -13,6 +14,31 @@ class BagianSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $bagian = [
+            [
+                'nama' => 'Kepegawaian',
+
+            ],
+            [
+                'nama' => 'Keuangan',
+
+            ],
+            [
+                'nama' => 'Umum',
+
+            ],
+            [
+                'nama' => 'Perlengkapan',
+
+            ],
+            [
+                'nama' => 'IT',
+
+            ],
+
+
+        ];
+
+        DB::table('bagians')->insert($bagian);
     }
 }

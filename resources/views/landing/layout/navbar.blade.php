@@ -9,7 +9,7 @@
             </button>
 
             <a class="navbar-brand" href="index.html">
-                <h1>ErmaHerb</h1>
+                <h1>BPSDM</h1>
             </a>
 
         </div>
@@ -18,22 +18,7 @@
                 <li class="{{ request()->segment(1) == '' ? 'active' : '' }}"><a
                         href="{{ route('landing') }}">Home</a>
                 </li>
-                <li class="{{ request()->segment(1) == 'penyakit' ? 'active' : '' }}"><a
-                        href="{{ route('landing.penyakit') }}">Penyakit</a></li>
-                <li class="dropdown {{ request()->segment(1) == 'tumbuhan' ? 'active' : '' }}"><a href="#">Tumbuhan<i
-                            class="fa fa-angle-down"></i></a>
-                    <ul role="menu" class="sub-menu">
-                        @forelse ($penyakits as $penyakit)
-                            <li><a
-                                    href="{{ route('landing.tumbuhan', ['slug' => $penyakit->slug]) }}">{{ $penyakit->nama }}</a>
-                            </li>
-                        @empty
-                        @endforelse
 
-                    </ul>
-                </li>
-                <li class="{{ request()->segment(1) == 'perhitungan' ? 'active' : '' }}"><a
-                        href="{{ route('landing.perhitungan') }}">Perhitungan</a></li>
 
             </ul>
         </div>

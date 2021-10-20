@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Home | ErmaHerb</title>
+    <title>Home | BPDSM</title>
     <link href="{{ asset('multicolor/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('multicolor/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('multicolor/css/animate.min.css') }}" rel="stylesheet">

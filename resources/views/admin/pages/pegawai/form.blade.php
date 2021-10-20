@@ -9,34 +9,35 @@
 @endsection
 
 @section('title')
-    User
+    Penilaian Pegawai
 @endsection
 @section('content')
     <!-- Main Content -->
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Moora</h1>
+                <div class="section-header-back">
+                    <a href="{{ route('pegawai.index') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+                </div>
+                <h1>Penilaian</h1>
 
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="/">Dashboard</a></div>
-                    <div class="breadcrumb-item">User</div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pegawai.index') }}">Pegawai</a></div>
+                    <div class="breadcrumb-item">Penilaian</div>
                 </div>
             </div>
             <div class="section-body">
-                <div class="section-header-button">
-                    <a href="/admin/moora/proses" class="btn btn-primary">Tambah</a>
-                </div>
 
 
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4>Form</h4>
+                                <h4>Form Penilaian</h4>
 
                             </div>
-                            <form action="{{ route('moora.proses') }}" method="POST">
+                            <form action="{{ route('pegawai.penilaian') }}" method="POST">
                                 <div class="card-body">
                                     @if (Session::has('post_success'))
                                         <div class="alert alert-success alert-dismissible show fade">
@@ -54,25 +55,21 @@
                                             @php
                                                 $nama = Str::slug($criteria->nama, '_');
                                             @endphp
-                                            <div class="col-sm-12 col-md-12 col-lg-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group mb-4">
                                                     <label class="form-label text-md-left ">
                                                         {{ $criteria->nama }}
                                                     </label>
-                                                    @if (View::exists('admin.form.' . $nama))
-                                                        @includeIf('admin.form.'.$nama, ['nama' => $nama])
-                                                    @else
-                                                        <input type="text" class="form-control" required
-                                                            name="{{ $nama }}" value="{{ old($nama) }}">
-                                                    @endif
-
+                                                    <input type="number" class="form-control penilaian" min="0" required
+                                                        data-pegawai="{{ $pegawai->id }}"
+                                                        data-crit="{{ $criteria->id }}" value="{{ $criteria->nilai }}">
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-primary" type="submit">Proses</button>
+                                    <button class="btn btn-primary" id="submit">Proses</button>
                                 </div>
                             </form>
                         </div>
@@ -91,42 +88,49 @@
 
     <script>
         $(document).ready(function() {
-            $(".delete").click(function() {
-                var id = $(this).parents("tr").attr("id");
-                swal({
-                        title: 'Are you sure?',
-                        text: 'Once deleted, you will not be able to recover this post!',
-                        icon: 'warning',
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            console.log('id :' + id);
-                            $.ajax({
-                                type: 'DELETE',
-                                url: "/admin/user/" + id,
-                                data: {
-                                    _token: '{{ csrf_token() }}',
-                                },
-                                success: function(response) {
-                                    if (response.success) {
-                                        swal({
-                                            title: "Terhapus!",
-                                            text: response.success,
-                                            buttonsStyling: false,
-                                            confirmButtonClass: "btn btn-success",
-                                            icon: "success"
-                                        }).then((result) => {
-                                            location.reload();
-                                        });
-                                    }
-                                }
-                            });
-                        } else {
-                            swal('Data anda tidak jadi dihapus');
-                        }
+            $('#submit').click(function(e) {
+                e.preventDefault();
+                var arrayNilai = [];
+                var stop = false;
+                $('.penilaian').each(function(index, element) {
+                    var pegawai_id = $(this).data('pegawai');
+                    var criteria_id = $(this).data('crit');
+                    var nilai = $(this).val();
+                    if (nilai == '') {
+                        iziToast.error({
+                            title: 'Gagal',
+                            message: 'Mohon diisi sampai lengkap',
+                            position: 'topRight'
+                        });
+                        stop = true;
+                        return false;
+                    }
+                    arrayNilai.push({
+                        'pegawai_id': pegawai_id,
+                        'criteria_id': criteria_id,
+                        'nilai': parseInt(nilai)
                     });
+
+                });
+                if (stop) {
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('pegawai.penilaian') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        arrayNilai: arrayNilai,
+                    },
+                    dataType: "JSON",
+                    success: function(response) {
+                        iziToast.success({
+                            title: 'Sukses',
+                            message: response.success,
+                            position: 'topRight'
+                        });
+                    }
+                });
 
             });
         });

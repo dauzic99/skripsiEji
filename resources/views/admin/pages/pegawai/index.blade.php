@@ -51,13 +51,13 @@
                                     <table class="table table-striped" id="table-2">
                                         <thead>
                                             <tr>
-                                                <th class="text-center">
+                                                <th width="5%" class="text-center">
                                                     #
                                                 </th>
-                                                <th width="20%">Cover</th>
+                                                <th width="10%">Cover</th>
                                                 <th>Nama</th>
                                                 <th>Bagian</th>
-                                                <th width="30%">Aksi</th>
+                                                <th width="20%">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -66,12 +66,18 @@
                                                     <td class="align-middle">
                                                         {{ $loop->index + 1 }}
                                                     </td>
-
+                                                    <td>
+                                                        <img src="{{ asset('images/pegawai/cover/' . $item->cover) }}"
+                                                            alt="" class="img-fluid">
+                                                    </td>
                                                     <td class="align-middle">{{ $item->nama }}</td>
-                                                    <td class="align-middle">{{ $item->bagian }}</td>
+                                                    <td class="align-middle">{{ $item->bagian->nama }}</td>
 
                                                     <td class="align-middle">
-
+                                                        <a href="{{ route('pegawai.detail', ['slug' => $item->slug]) }}"
+                                                            class="btn btn-outline-primary" style="margin: 5px;">
+                                                            <i class="fas fa-id-card    "></i>
+                                                        </a>
                                                         <a href="{{ route('pegawai.edit', ['slug' => $item->slug]) }}"
                                                             class="btn btn-primary" style="margin: 5px;">
                                                             <i class="fas fa-edit"></i>

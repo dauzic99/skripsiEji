@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bagian;
+use App\Models\Criteria;
 use App\Models\Pegawai;
+use App\Models\Penilaian;
 use Illuminate\Http\Request;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use File;
@@ -27,8 +30,8 @@ class PegawaiController extends Controller
      */
     public function create()
     {
-        $penyakit = Penyakit::all();
-        return view('admin.pages.tumbuhan.create', compact('penyakit'));
+        $bagian = Bagian::all();
+        return view('admin.pages.pegawai.create', compact('bagian'));
     }
 
     /**
@@ -41,34 +44,22 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate([
             'nama'    => 'required',
-            'latin'    => 'required',
-            'deskripsi' => 'required',
-            'penyakit_id' => 'required',
-            'bagian' => 'required',
-            'pengolahan' => 'required',
-            'penggunaan' => 'required',
-            'jenis' => 'required',
+            'bagian_id'    => 'required',
             'cover'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
 
         // pindah file gambar
-        $imageName = 'tumbuhan-cover-' . time() . '.' . $request->cover->extension();
-        $request->cover->move(public_path('images/tumbuhan/cover'), $imageName);
+        $imageName = 'pegawai-cover-' . time() . '.' . $request->cover->extension();
+        $request->cover->move(public_path('images/pegawai/cover'), $imageName);
 
-        $tumbuhan           = new Tumbuhan();
-        $tumbuhan->nama    = $request->nama;
-        $tumbuhan->slug     = SlugService::createSlug(Tumbuhan::class, 'slug', $request->nama);
-        $tumbuhan->deskripsi  = $request->deskripsi;
-        $tumbuhan->bagian  = $request->bagian;
-        $tumbuhan->pengolahan  = $request->pengolahan;
-        $tumbuhan->penggunaan  = $request->penggunaan;
-        $tumbuhan->jenis  = $request->jenis;
-        $tumbuhan->latin  = $request->latin;
-        $tumbuhan->cover    = $imageName;
-        $tumbuhan->penyakit_id    = $request->penyakit_id;
-        $tumbuhan->save();
-        return redirect('/admin/tumbuhan')->with('post_success', 'Tumbuhan Berhasil Disimpan');
+        $pegawai           = new Pegawai();
+        $pegawai->nama    = $request->nama;
+        $pegawai->slug     = SlugService::createSlug(Pegawai::class, 'slug', $request->nama);
+        $pegawai->bagian_id    = $request->bagian_id;
+        $pegawai->cover    = $imageName;
+        $pegawai->save();
+        return redirect('/admin/pegawai')->with('post_success', 'Pegawai Berhasil Disimpan');
     }
 
     /**
@@ -77,9 +68,43 @@ class PegawaiController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($slug)
     {
-        //
+        $pegawai = Pegawai::where('slug', $slug)->first();
+
+        $criterion = Criteria::all();
+        for ($i = 0; $i < count($criterion); $i++) {
+            $nilai = Penilaian::where('pegawai_id', $pegawai->id)->where('criteria_id', $criterion[$i]['id'])->first();
+            if ($nilai != null) {
+                $criterion[$i]['nilai'] = $nilai->nilai;
+                # code...
+            }
+        }
+
+        return view('admin.pages.pegawai.form', [
+            'criterion' => $criterion,
+            'pegawai' => $pegawai,
+        ]);
+    }
+
+    public function penilaian(Request $request)
+    {
+        $arrayNilai = $request->arrayNilai;
+        if ($request->ajax()) {
+            $delete = Penilaian::where('pegawai_id', intval($arrayNilai[0]['pegawai_id']));
+            $delete->delete();
+            foreach ($arrayNilai as $key => $value) {
+                $penilaian = new Penilaian();
+                $penilaian->pegawai_id = intval($value['pegawai_id']);
+                $penilaian->criteria_id = intval($value['criteria_id']);
+                $penilaian->nilai = intval($value['nilai']);
+                $penilaian->save();
+            }
+
+            return response()->json([
+                'success' => 'Berhasil menyimpan penilaian',
+            ]);
+        }
     }
 
     /**
@@ -90,11 +115,11 @@ class PegawaiController extends Controller
      */
     public function edit($slug)
     {
-        $tumbuhan = Tumbuhan::where('slug', '=', $slug)->firstOrFail();
-        $penyakit = Penyakit::all();
-        return view('admin.pages.tumbuhan.edit', [
-            'tumbuhan' => $tumbuhan,
-            'penyakit' => $penyakit
+        $pegawai = Pegawai::where('slug', '=', $slug)->firstOrFail();
+        $bagian = Bagian::all();
+        return view('admin.pages.pegawai.edit', [
+            'pegawai' => $pegawai,
+            'bagian' => $bagian
         ]);
     }
 
@@ -109,53 +134,35 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate([
             'nama'    => 'required',
-            'latin'    => 'required',
-            'deskripsi' => 'required',
-            'penyakit_id' => 'required',
-            'bagian' => 'required',
-            'pengolahan' => 'required',
-            'penggunaan' => 'required',
-            'jenis' => 'required',
+            'bagian_id' => 'required',
         ]);
 
         if ($request->has('cover')) {
-            $tumbuhan = Tumbuhan::where('slug', '=', $slug)->firstOrFail();
+            $pegawai = Pegawai::where('slug', '=', $slug)->firstOrFail();
 
-            if (File::exists(public_path('images/tumbuhan/cover/' . $tumbuhan->cover))) {
-                File::delete(public_path('images/tumbuhan/cover/' . $tumbuhan->cover));
+            if (File::exists(public_path('images/pegawai/cover/' . $pegawai->cover))) {
+                File::delete(public_path('images/pegawai/cover/' . $pegawai->cover));
             }
 
             // pindah file gambar
-            $imageName = 'tumbuhan-cover-' . time() . '.' . $request->cover->extension();
-            $request->cover->move(public_path('images/tumbuhan/cover'), $imageName);
+            $imageName = 'pegawai-cover-' . time() . '.' . $request->cover->extension();
+            $request->cover->move(public_path('images/pegawai/cover'), $imageName);
 
 
-            $tumbuhan->nama    = $request->nama;
-            $tumbuhan->slug     = SlugService::createSlug(Tumbuhan::class, 'slug', $request->nama);
-            $tumbuhan->deskripsi  = $request->deskripsi;
-            $tumbuhan->bagian  = $request->bagian;
-            $tumbuhan->pengolahan  = $request->pengolahan;
-            $tumbuhan->penggunaan  = $request->penggunaan;
-            $tumbuhan->jenis  = $request->jenis;
-            $tumbuhan->latin  = $request->latin;
-            $tumbuhan->cover    = $imageName;
-            $tumbuhan->penyakit_id    = $request->penyakit_id;
-            $tumbuhan->update();
+            $pegawai->nama    = $request->nama;
+            $pegawai->slug     = SlugService::createSlug(Pegawai::class, 'slug', $request->nama);
+            $pegawai->bagian_id    = $request->bagian_id;
+            $pegawai->cover    = $imageName;
+            $pegawai->update();
         } else {
-            $tumbuhan = Tumbuhan::where('slug', '=', $slug)->firstOrFail();
-            $tumbuhan->nama    = $request->nama;
-            $tumbuhan->slug     = SlugService::createSlug(Tumbuhan::class, 'slug', $request->nama);
-            $tumbuhan->deskripsi  = $request->deskripsi;
-            $tumbuhan->bagian  = $request->bagian;
-            $tumbuhan->pengolahan  = $request->pengolahan;
-            $tumbuhan->penggunaan  = $request->penggunaan;
-            $tumbuhan->latin  = $request->latin;
-            $tumbuhan->jenis  = $request->jenis;
-            $tumbuhan->penyakit_id    = $request->penyakit_id;
-            $tumbuhan->update();
+            $pegawai = Pegawai::where('slug', '=', $slug)->firstOrFail();
+            $pegawai->nama    = $request->nama;
+            $pegawai->slug     = SlugService::createSlug(Pegawai::class, 'slug', $request->nama);
+            $pegawai->bagian_id    = $request->bagian_id;
+            $pegawai->update();
         }
 
-        return redirect('/admin/tumbuhan')->with('post_success', 'Tumbuhan Berhasil Diubah');
+        return redirect('/admin/pegawai')->with('post_success', 'Pegawai Berhasil Diubah');
     }
 
     /**
@@ -166,18 +173,18 @@ class PegawaiController extends Controller
      */
     public function destroy($id)
     {
-        $tumbuhan = Tumbuhan::findOrFail($id);
-        if ($tumbuhan->delete()) {
-            if (File::exists(public_path('images/tumbuhan/cover/' . $tumbuhan->cover))) {
-                File::delete(public_path('images/tumbuhan/cover/' . $tumbuhan->cover));
+        $pegawai = Pegawai::findOrFail($id);
+        if ($pegawai->delete()) {
+            if (File::exists(public_path('images/pegawai/cover/' . $pegawai->cover))) {
+                File::delete(public_path('images/pegawai/cover/' . $pegawai->cover));
             } else {
             }
             return response()->json([
-                'success' => 'Tumbuhan Berhasil Dihapus',
+                'success' => 'Pegawai Berhasil Dihapus',
             ]);
         }
         return response()->json([
-            'error' => 'Tumbuhan tidak ditemukan',
+            'error' => 'Pegawai tidak ditemukan',
         ]);
     }
 }

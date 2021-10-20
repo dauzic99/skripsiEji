@@ -31,121 +31,9 @@
                     @endforeach
                 </ul>
 
-                <button class="btn btn-outline-primary mt-4" id="buttonForm">Additional Option</button>
-                <div class="mt-4" id="form-additional" style="display: none;">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label class="form-label text-md-left">Bagian</label>
-                                    <select class="form-control select2" name="bagian" id="formBagian">
-                                        <option value="">Semua</option>
-                                        <option value="Daun">Daun</option>
-                                        <option value="Akar">Akar</option>
-                                        <option value="Herba">Herba</option>
-                                        <option value="Bunga">Bunga</option>
-                                        <option value="Biji">Biji</option>
-                                        <option value="Getah">Getah</option>
-                                        <option value="Buah">Buah</option>
-                                        <option value="Batang">Batang</option>
-                                        <option value="Siung">Siung</option>
-                                        <option value="Rimpang">Rimpang</option>
-                                    </select>
-                                    @error('bagian')
-                                        <span class=" text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label class="form-label text-md-left">Pengolahan</label>
-                                    <select class="form-control select2" name="pengolahan" id="formPengolahan">
-                                        <option value="">Semua</option>
-                                        <option value="Dihaluskan">Dihaluskan</option>
-                                        <option value="Direbus">Direbus</option>
-                                        <option value="Langsung">Langsung</option>
-                                        <option value="Dibakar">Dibakar</option>
-                                    </select>
-                                    @error('pengolahan')
-                                        <span class=" text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label class="form-label text-md-left">Penggunaan</label>
-                                    <select class="form-control select2" name="penggunaan" id="formPenggunaan">
-                                        <option value="">Semua</option>
-                                        <option value="Dioleskan">Dioleskan</option>
-                                        <option value="Ditempelkan">Ditempelkan</option>
-                                        <option value="Diminum">Diminum</option>
-                                        <option value="Dimakan">Dimakan</option>
-                                        <option value="Digunakan untuk mandi">Digunakan untuk mandi</option>
-                                    </select>
-                                    @error('penggunaan')
-                                        <span class=" text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label class="form-label text-md-left">Jenis</label>
-                                    <select class="form-control select2" name="jenis" id="formJenis">
-                                        <option value="">Semua</option>
-                                        <option value="Perdu">Perdu</option>
-                                        <option value="Semak">Semak</option>
-                                        <option value="Epifit">Epifit</option>
-                                        <option value="Pohon">Pohon</option>
-                                        <option value="Rumput">Rumput</option>
-                                        <option value="Herba">Herba</option>
-                                        <option value="Terna">Terna</option>
-                                        <option value="Liana">Liana</option>
-                                    </select>
-                                    @error('jenis')
-                                        <span class=" text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <button class="btn btn-primary" id="filterButton">Filter</button>
-                </div>
-                {{-- table data tumbuhan --}}
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Data Tumbuhan</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped" id="table-2">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">
-                                                    #
-                                                </th>
-                                                <th>Nama</th>
-                                                @foreach ($criterion as $criterias)
-                                                    <th>{{ $criterias->nama }}</th>
-                                                @endforeach
-                                            </tr>
-                                        </thead>
-                                        <tbody class="data-penyakit">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
-                </div>
+                {{-- table data tumbuhan --}}
+
 
                 {{-- table matriks keputusan --}}
                 <div class="row mt-4">
@@ -291,43 +179,9 @@
         var arrayMatriksNormal = []; // array matriks normalisasi
         var arrayMatriksNormalBobot = []; // array matriks terbobot
 
-        var tumbuhan = [];
+        var pegawais = [];
         var weights = [];
 
-        function getPenyakit(id) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('getPenyakit') }}",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: id,
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    var plants = response.tumbuhan;
-                    var html = '';
-                    tumbuhan = [];
-                    plants.forEach((plant, index) => {
-                        tumbuhan.push(plant.nama);
-                        html += '<tr>' +
-                            '<td>' + (index + 1) + '</td>' +
-                            '<td>' + plant.nama + '</td>' +
-                            '<td>' + plant.bagian + '</td>' +
-                            '<td>' + plant.pengolahan + '</td>' +
-                            '<td>' + plant.penggunaan + '</td>' +
-                            '<td>' + plant.jenis + '</td>' +
-                            '</tr>';
-                    });
-                    $('.data-penyakit').animate({
-                        'opacity': 0
-                    }, 200, function() {
-                        $(this).html(html).animate({
-                            'opacity': 1
-                        }, 200);
-                    });
-                }
-            });
-        }
 
         function getPembagi() {
             arrayMatriks = [];
@@ -361,27 +215,28 @@
             });
         }
 
-        function getMatriks(id) {
+        function getMatriks() {
             $.ajax({
                 type: "POST",
                 url: "{{ route('getMatriks') }}",
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: id,
+
                 },
                 dataType: "JSON",
                 success: function(response) {
-                    var plants = response.tumbuhan;
+                    pegawais = response.pegawais;
                     weights = response.bobot;
                     var html = '';
-                    plants.forEach((plant, index) => {
+                    pegawais.forEach((pegawai, indexP) => {
                         html += '<tr class="rowMatriks">' +
-                            '<td>' + plant.nama + '</td>' +
-                            '<td class="matriks">' + plant.bagian + '</td>' +
-                            '<td class="matriks">' + plant.pengolahan + '</td>' +
-                            '<td class="matriks">' + plant.penggunaan + '</td>' +
-                            '<td class="matriks">' + plant.jenis + '</td>' +
-                            '</tr>';
+                            '<td>' + pegawai.nama + '</td>';
+                        weights.forEach((weight, indexW) => {
+                            html += '<td class="matriks">' + pegawai["crit_" + (indexW + 1)] +
+                                '</td>';
+
+                        });
+                        html += '</tr>';
                     });
                     html += '<tr>' +
                         '<td>Bobot</td>';
@@ -405,7 +260,7 @@
                         getPembagi();
                         getMatriksNormalize();
                         getMatriksTerbobot();
-                        getNilaiPreferensi(id);
+                        getNilaiPreferensi();
                     });
 
 
@@ -435,9 +290,9 @@
             //masukkan ke table matriks normalisasi
             var html = '';
 
-            tumbuhan.forEach((plant, index) => {
+            pegawais.forEach((pegawai, index) => {
                 html += '<tr class="rowMatriksNormal">' +
-                    '<td>' + plant + '</td>';
+                    '<td>' + pegawai.nama + '</td>';
                 for (let j = 0; j < arrayMatriksNormal[index].length; j++) {
                     html += '<td>' + arrayMatriksNormal[index][j] + '</td>';
                 }
@@ -469,9 +324,9 @@
             //masukkan ke table matriks terbobot
             var html = '';
 
-            tumbuhan.forEach((plant, index) => {
+            pegawais.forEach((pegawai, index) => {
                 html += '<tr class="rowMatriksNormalBobot">' +
-                    '<td>' + plant + '</td>';
+                    '<td>' + pegawai.nama + '</td>';
                 for (let j = 0; j < arrayMatriksNormalBobot[index].length; j++) {
                     html += '<td>' + arrayMatriksNormalBobot[index][j] + '</td>';
                 }
@@ -487,7 +342,7 @@
 
         }
 
-        function getNilaiPreferensi(id) {
+        function getNilaiPreferensi() {
             $('.tabel-ranking').html('');
             $.ajax({
                 type: "POST",
@@ -495,7 +350,6 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     arrayMatriksNormalBobot: arrayMatriksNormalBobot,
-                    penyakit_id: id,
 
                 },
                 dataType: "JSON",
@@ -505,11 +359,11 @@
                     var output = sortJSON(response, 'nilai', '321');
                     var html = '';
 
-                    output.forEach((plant, index) => {
+                    output.forEach((pegawai, index) => {
                         html += '<tr class="rowRanking">' +
                             '<td>' + (index + 1) + '</td>' +
-                            '<td>' + plant.produk + '</td>' +
-                            '<td>' + plant.nilai.toFixed(3) + '</td>' +
+                            '<td>' + pegawai.produk + '</td>' +
+                            '<td>' + pegawai.nilai.toFixed(3) + '</td>' +
                             '</tr>';
                     });
                     $('.tabel-ranking').animate({
@@ -540,42 +394,10 @@
         }
 
 
-        function getPenyakitFiltered(param) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('getPenyakitFiltered') }}",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    param: param,
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    var plants = response.tumbuhan;
-                    var html = '';
-                    tumbuhan = [];
-                    plants.forEach((plant, index) => {
-                        tumbuhan.push(plant.nama);
-                        html += '<tr>' +
-                            '<td>' + (index + 1) + '</td>' +
-                            '<td>' + plant.nama + '</td>' +
-                            '<td>' + plant.bagian + '</td>' +
-                            '<td>' + plant.pengolahan + '</td>' +
-                            '<td>' + plant.penggunaan + '</td>' +
-                            '<td>' + plant.jenis + '</td>' +
-                            '</tr>';
-                    });
-                    $('.data-penyakit').animate({
-                        'opacity': 0
-                    }, 200, function() {
-                        $(this).html(html).animate({
-                            'opacity': 1
-                        }, 200);
-                    });
-                }
-            });
-        }
+
 
         function getMatriksFiltered(param) {
+            console.log(param);
             $.ajax({
                 type: "POST",
                 url: "{{ route('getMatriksFiltered') }}",
@@ -585,18 +407,18 @@
                 },
                 dataType: "JSON",
                 success: function(response) {
-                    console.log(response.tumbuhan);
-                    var plants = response.tumbuhan;
+                    pegawais = response.pegawais;
                     weights = response.bobot;
                     var html = '';
-                    plants.forEach((plant, index) => {
+                    pegawais.forEach((pegawai, indexP) => {
                         html += '<tr class="rowMatriks">' +
-                            '<td>' + plant.nama + '</td>' +
-                            '<td class="matriks">' + plant.bagian + '</td>' +
-                            '<td class="matriks">' + plant.pengolahan + '</td>' +
-                            '<td class="matriks">' + plant.penggunaan + '</td>' +
-                            '<td class="matriks">' + plant.jenis + '</td>' +
-                            '</tr>';
+                            '<td>' + pegawai.nama + '</td>';
+                        weights.forEach((weight, indexW) => {
+                            html += '<td class="matriks">' + pegawai["crit_" + (indexW + 1)] +
+                                '</td>';
+
+                        });
+                        html += '</tr>';
                     });
                     html += '<tr>' +
                         '<td>Bobot</td>';
@@ -610,6 +432,7 @@
                         html += '<td class ="pembagi"></td>';
                     });
                     html += '</tr>';
+
 
                     $('.matriks-normalize').animate({
                         'opacity': 0
@@ -667,53 +490,17 @@
 
 
         $(document).ready(function() {
+            getMatriks();
 
             $('.tab-penyakit').on('click', function() {
                 var id = $(this).data('id');
-                getPenyakit(id);
-                getMatriks(id);
-
-            });
-
-            $('#buttonForm').on('click', function() {
-                var jumlahActive = $('.tab-penyakit.active').length;
-                if (jumlahActive > 0) {
-                    if ($(this).hasClass('btn-outline-primary')) {
-                        $(this).removeClass('btn-outline-primary');
-                        $(this).addClass('btn-primary');
-                    } else {
-                        $(this).removeClass('btn-primary');
-                        $(this).addClass('btn-outline-primary');
-                    }
-                    $('#form-additional').toggle('display');
-
-                } else {
-                    iziToast.error({
-                        title: 'Gagal',
-                        message: 'Silahkan pilih jenis penyakit terlebih dahulu',
-                        position: 'topRight'
-                    });
-                }
-            });
-
-            $('#filterButton').on('click', function() {
-                var bagian = $('#formBagian').val();
-                var pengolahan = $('#formPengolahan').val();
-                var penggunaan = $('#formPenggunaan').val();
-                var jenis = $('#formJenis').val();
-                var penyakit_id = $('.tab-penyakit.active').data('id');
-
                 var param = {
-                    bagian: bagian,
-                    pengolahan: pengolahan,
-                    penggunaan: penggunaan,
-                    jenis: jenis,
-                    penyakit_id: penyakit_id,
+                    bagian_id: id,
                 }
-                getPenyakitFiltered(param);
                 getMatriksFiltered(param);
 
             });
+
 
         });
 

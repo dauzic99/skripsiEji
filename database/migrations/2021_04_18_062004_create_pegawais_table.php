@@ -17,7 +17,11 @@ class CreatePegawaisTable extends Migration
             $table->id();
             $table->string('nama');
             $table->string('slug');
-            $table->string('bidang');
+            $table->string('cover');
+            $table->foreignId('bagian_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
