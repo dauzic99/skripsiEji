@@ -20,70 +20,62 @@ class CriteriaSeeder extends Seeder
                 'tipe' => 'Benefit',
                 'rank' => 1,
             ],
+            
             [
-                'nama' => 'Kerja Sama',
+                'nama' => 'Kejujuran',
                 'tipe' => 'Benefit',
                 'rank' => 2,
             ],
             [
-                'nama' => 'Kejujuran',
+                'nama' => 'Kerapian',
                 'tipe' => 'Benefit',
                 'rank' => 3,
             ],
             [
-                'nama' => 'Kerapian',
-                'tipe' => 'Benefit',
-                'rank' => 4,
-            ],
-            [
                 'nama' => 'Absensi',
                 'tipe' => 'Cost',
-                'rank' => 5,
+                'rank' => 4,
             ],
             [
                 'nama' => 'Kesopanan',
                 'tipe' => 'Benefit',
-                'rank' => 6,
+                'rank' => 5,
             ],
             [
                 'nama' => 'Prestasi',
                 'tipe' => 'Benefit',
-                'rank' => 7,
+                'rank' => 6,
             ],
-            [
-                'nama' => 'Etika dan Prilaku',
-                'tipe' => 'Benefit',
-                'rank' => 8,
-            ],
+            
             [
                 'nama' => 'Loyalitas',
                 'tipe' => 'Benefit',
-                'rank' => 9,
+                'rank' => 7,
             ],
             [
                 'nama' => 'Komitmen',
                 'tipe' => 'Benefit',
-                'rank' => 10,
+                'rank' => 8,
             ],
             [
                 'nama' => 'Komunikasi',
                 'tipe' => 'Benefit',
-                'rank' => 11,
+                'rank' => 9,
             ],
             [
                 'nama' => 'Tanggung Jawab',
                 'tipe' => 'Benefit',
-                'rank' => 12,
+                'rank' => 10,
             ],
             [
                 'nama' => 'Kemampuan dan Keterampilan',
                 'tipe' => 'Benefit',
-                'rank' => 13,
+                'rank' => 11,
             ],
             [
                 'nama' => 'Pelanggaran',
                 'tipe' => 'Cost',
-                'rank' => 14,
+                'rank' => 12,
             ],
 
         ];

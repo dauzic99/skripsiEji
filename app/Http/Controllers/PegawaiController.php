@@ -72,7 +72,7 @@ class PegawaiController extends Controller
     {
         $pegawai = Pegawai::where('slug', $slug)->first();
 
-        $criterion = Criteria::all();
+        $criterion = Criteria::orderBy('rank')->get();
         for ($i = 0; $i < count($criterion); $i++) {
             $nilai = Penilaian::where('pegawai_id', $pegawai->id)->where('criteria_id', $criterion[$i]['id'])->first();
             if ($nilai != null) {

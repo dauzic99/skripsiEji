@@ -109,7 +109,7 @@
 
     <script>
         $(document).ready(function() {
-            $(".delete").click(function() {
+            $(document).on('click','.delete',function() {
                 var id = $(this).parents("tr").attr("id");
                 swal({
                         title: 'Are you sure?',

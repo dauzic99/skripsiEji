@@ -19,7 +19,7 @@
                 <div class="section-header-back">
                     <a href="{{ route('pegawai.index') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
                 </div>
-                <h1>Penilaian</h1>
+                <h1>Penilaian {{$pegawai->nama}}</h1>
 
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="/">Dashboard</a></div>
@@ -60,9 +60,18 @@
                                                     <label class="form-label text-md-left ">
                                                         {{ $criteria->nama }}
                                                     </label>
-                                                    <input type="number" class="form-control penilaian" min="0" required
-                                                        data-pegawai="{{ $pegawai->id }}"
-                                                        data-crit="{{ $criteria->id }}" value="{{ $criteria->nilai }}">
+                                                    <select class="form-control penilaian" data-pegawai="{{ $pegawai->id }}"
+                                                        data-crit="{{ $criteria->id }}">
+                                                        @if (View::exists('admin.pages.form.' . $criteria->nama))
+                                                        @includeIf('admin.pages.form.' . $criteria->nama, ['nilai' => $criteria->nilai])
+                                                    @else
+                                                        <option value="4" {{($criteria->nilai == 4) ? 'selected':''}}>Sangat {{$criteria->nama}}</option>
+                                                        <option value="3" {{($criteria->nilai == 3) ? 'selected':''}}>{{$criteria->nama}}</option>
+                                                        <option value="2" {{($criteria->nilai == 2) ? 'selected':''}}>Kurang {{$criteria->nama}}</option>
+                                                        <option value="1" {{($criteria->nilai == 1) ? 'selected':''}}>Tidak {{$criteria->nama}}</option>
+                                                    @endif
+                                                        
+                                                    </select>
                                                 </div>
                                             </div>
                                         @endforeach
