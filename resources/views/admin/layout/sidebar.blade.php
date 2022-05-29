@@ -37,14 +37,14 @@
             <li class="{{ request()->segment(2) == 'moora' ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/moora">
                     <i class="fas fa-laptop-code" aria-hidden="true"></i>
-                    <span>Moora</span>
+                    <span>MOORA</span>
                 </a>
             </li>
             <li class="menu-header">Manajemen Web</li>
             <li class="{{ request()->segment(2) == 'user' ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/user">
                     <i class="fas fa-user-lock    "></i>
-                    <span>Customer</span>
+                    <span>Operator</span>
                 </a>
             </li>
         </ul>
